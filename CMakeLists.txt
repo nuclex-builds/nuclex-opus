@@ -4,9 +4,9 @@ cmake_minimum_required (VERSION 3.18)
 # -------------------------------------------------------------------------------------------------
 
 project(
-	Opus
-	VERSION 1.4
-	DESCRIPTION "Lossy audio codec that beats any other lossy codec there is"
+  Opus
+  VERSION 1.4
+  DESCRIPTION "Lossy audio codec that beats any other lossy codec there is"
 )
 
 # This sets a bunch of compile flags and defined ${NUCLEX_COMPILER_TAG} to
@@ -22,32 +22,32 @@ include("../../build-system/cmake/cplusplus.cmake")
 # Completely useless. Weird, custom build language with side effects as the primary
 # means of returning results and that probably changes between versions. Not fixing this.
 if(NOT EXISTS ${PROJECT_SOURCE_DIR}/build)
-	message(STATUS "Build directory not present, downloading sources")
+  message(STATUS "Build directory not present, downloading sources")
 
-	file(
-		DOWNLOAD https://github.com/xiph/opus/archive/refs/tags/v1.4.tar.gz
-		${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz
-		SHOW_PROGRESS
-		EXPECTED_HASH SHA256=7875d49596286055b52439ed42f044bd8ad426aa4cc5aabd96bfe7abb971d5e8
-	)
-	list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
-	if(NOT ${STATUS_CODE} EQUAL 0)
-		list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
-		file(REMOVE ${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz)
-		message(FATAL_ERROR "Could not download Opus: ${ERROR_MESSAGE}")
-	endif()
+  file(
+    DOWNLOAD https://github.com/xiph/opus/archive/refs/tags/v1.4.tar.gz
+    ${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz
+    SHOW_PROGRESS
+    EXPECTED_HASH SHA256=7875d49596286055b52439ed42f044bd8ad426aa4cc5aabd96bfe7abb971d5e8
+  )
+  list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+  if(NOT ${STATUS_CODE} EQUAL 0)
+    list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+    file(REMOVE ${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz)
+    message(FATAL_ERROR "Could not download Opus: ${ERROR_MESSAGE}")
+  endif()
 
-	message(STATUS "Extracting Opus sources")
-	file(
-		ARCHIVE_EXTRACT
-		INPUT ${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz
-		DESTINATION ${CMAKE_BINARY_DIR}/extract
-	)
-	file(
-		RENAME
-		${CMAKE_BINARY_DIR}/extract/v1.4
-		${PROJECT_SOURCE_DIR}/build
-	)
+  message(STATUS "Extracting Opus sources")
+  file(
+    ARCHIVE_EXTRACT
+    INPUT ${PROJECT_SOURCE_DIR}/downloads/v1.4.tar.gz
+    DESTINATION ${CMAKE_BINARY_DIR}/extract
+  )
+  file(
+    RENAME
+    ${CMAKE_BINARY_DIR}/extract/v1.4
+    ${PROJECT_SOURCE_DIR}/build
+  )
 endif()
 
 # -------------------------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ set(
   "build/silk/float/scale_copy_vector_FLP.c"
   "build/silk/float/schur_FLP.c"
   "build/silk/float/scale_vector_FLP.c"
-  "build/celt/x86/x86cpu.c"
   "build/silk/float/sort_FLP.c"
+  "build/celt/x86/x86cpu.c"
   "build/celt/x86/x86_celt_map.c"
   "build/silk/x86/x86_silk_map.c"
   "build/celt/x86/pitch_sse.c"
@@ -227,15 +227,15 @@ add_library(Opus STATIC)
 add_library(Opus::Static ALIAS Opus)
 
 target_compile_definitions(
-	Opus
+  Opus
   PRIVATE OPUS_EXPORTS
-	PRIVATE OPUS_BUILD
+  PRIVATE OPUS_BUILD
   PRIVATE USE_ALLOCA
 )
 
 target_include_directories(
-	Opus
-	PUBLIC "build/include"
+  Opus
+  PUBLIC "build/include"
   PRIVATE "build" # Ah yes, four conventions to access one's headers...
   PRIVATE "build/celt"
   PRIVATE "build/silk"
@@ -243,9 +243,9 @@ target_include_directories(
 )
 
 target_sources(
-	Opus
-	PUBLIC ${headerFiles}
-	PRIVATE ${sourceFiles}
+  Opus
+  PUBLIC ${headerFiles}
+  PRIVATE ${sourceFiles}
 )
 
 set_target_properties(Opus PROPERTIES PREFIX "")
@@ -254,15 +254,15 @@ set_target_properties(Opus PROPERTIES OUTPUT_NAME "opus")
 # -------------------------------------------------------------------------------------------------
 
 install(
-	TARGETS Opus
-	ARCHIVE	DESTINATION ${PROJECT_SOURCE_DIR}/bin/${NUCLEX_COMPILER_TAG}
+  TARGETS Opus
+  ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/bin/${NUCLEX_COMPILER_TAG}
 )
 
 # -------------------------------------------------------------------------------------------------
 
 file(
-	WRITE "${PROJECT_SOURCE_DIR}/OpusConfig.cmake"
-	"#!/usr/bin/cmake
+  WRITE "${PROJECT_SOURCE_DIR}/OpusConfig.cmake"
+  "#!/usr/bin/cmake
 
 # Configuration to include Opus in a CMake-based project. If you want to
 # reference Opus as an externally compiled static library, do this:
@@ -271,45 +271,45 @@ file(
 #    find_package(Opus REQUIRED CONFIG)
 #
 #    target_link_libraries(
-#        MyAwesomeProject
-#        PRIVATE Opus::Static
+#      MyAwesomeProject
+#      PRIVATE Opus::Static
 #    )
 #
 # Alternatively, if you want to build Opus together with your project,
 # use the normal CMakeLists.txt with CMake's add_subdirectory() command:
 #
 #    add_subdirectory(
-#        \"\${PROJECT_SOURCE_DIR}/../ThirdParty/opus\"
-#        \"\${CMAKE_BINARY_DIR}/opus\"
+#      \"\${PROJECT_SOURCE_DIR}/../ThirdParty/opus\"
+#      \"\${CMAKE_BINARY_DIR}/opus\"
 #    )
 #
 #    target_link_libraries(
-#        MyAwesomeProject
-#        PRIVATE Opus
+#      MyAwesomeProject
+#      PRIVATE Opus
 #    )
 #
 
 # -------------------------------------------------------------------------------------------------
 
 if(NOT DEFINED NUCLEX_COMPILER_TAG)
-	message(
-		FATAL_ERROR
-		\"NUCLEX_COMPILER_TAG not defined! Include cplusplus.cmake before importing this package \\
-		in order to generate a tag identifying the platform/compiler/architecture/variant!\"
-	)
+  message(
+    FATAL_ERROR
+    \"NUCLEX_COMPILER_TAG not defined! Include cplusplus.cmake before importing this package \\
+    in order to generate a tag identifying the platform/compiler/architecture/variant!\"
+  )
 endif()
 
 # -------------------------------------------------------------------------------------------------
 
 if(NOT EXISTS \"\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}\")
-	# TODO: Warn and link release build when compiling in debug mode
-	# TODO: Warn and link build for older compiler version if found
-	message(
-		FATAL_ERROR
-		\"Directory '\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}' not found. \\
-		Please either build and install this project before importing it via \\
-		find_package() or use this project's main CMakeFiles.txt via add_subdirectory()!\"
-	)
+  # TODO: Warn and link release build when compiling in debug mode
+  # TODO: Warn and link build for older compiler version if found
+  message(
+    FATAL_ERROR
+    \"Directory '\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}' not found. \\
+    Please either build and install this project before importing it via \\
+    find_package() or use this project's main CMakeFiles.txt via add_subdirectory()!\"
+  )
 endif()
 
 # -------------------------------------------------------------------------------------------------
@@ -323,24 +323,23 @@ add_library(Opus::Static STATIC IMPORTED)
 # CMake doesn't run the install step during build, so the only way to get the headers
 # in place before building would be by copying them rather than installing them.
 set_target_properties(
-	Opus::Static PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES \"\${CMAKE_CURRENT_LIST_DIR}/Include\"
-	IMPORTED_LINK_INTERFACE_LANGUAGES \"C\"
+  Opus::Static PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES \"\${CMAKE_CURRENT_LIST_DIR}/Include\"
+  IMPORTED_LINK_INTERFACE_LANGUAGES \"C\"
 )
 
 if(WIN32)
-	set_target_properties(
-		Opus::Static PROPERTIES
-		IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}/opus.lib\"
-	)
+  set_target_properties(
+    Opus::Static PROPERTIES
+    IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}/opus.lib\"
+  )
 else()
-	set_target_properties(
-		Opus::Static PROPERTIES
-		IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}/opus.a\"
-	)
+  set_target_properties(
+    Opus::Static PROPERTIES
+    IMPORTED_LOCATION \"\${CMAKE_CURRENT_LIST_DIR}/bin/\${NUCLEX_COMPILER_TAG}/opus.a\"
+  )
 endif()
 
-message(STATUS \"Imported Opus targets with binaries in '\${CMAKE_CURRENT_LIST_DIR}'\")"
-)
+message(STATUS \"Imported Opus targets with binaries in '\${CMAKE_CURRENT_LIST_DIR}'\")")
 
 # -------------------------------------------------------------------------------------------------
