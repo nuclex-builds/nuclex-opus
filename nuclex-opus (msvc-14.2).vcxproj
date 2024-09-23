@@ -345,9 +345,12 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="config.h">
+      <FileType>Document</FileType>
       <Command>COPY "$(ProjectDir)config.h" "$(ProjectDir)build\"</Command>
       <Message>Copying %(Filename) into build directory...</Message>
       <Outputs>$(ProjectDir)build\config.h</Outputs>
+      <LinkObjects>false</LinkObjects>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
