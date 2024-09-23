@@ -486,8 +486,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="config.h">
-      <Filter>Source</Filter>
-    </CustomBuild>
+    <CustomBuild Include="config.h" />
   </ItemGroup>
 </Project>
